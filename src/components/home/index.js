@@ -1,7 +1,9 @@
 import React from "react";
 
 class Home extends React.Component {
-  componentDidMount() {}
+  componentDidMount() {
+    //test
+  }
 }
 
 export default Home;
