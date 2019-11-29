@@ -1,11 +1,7 @@
-import React from 'react'
+import React from "react";
 
-const Home = () => {
-	return (
-		<div>
-		Componente Home
-		</div>
-		)
+class Home extends React.Component {
+  componentDidMount() {}
 }
 
-export default Home
+export default Home;

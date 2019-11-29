@@ -1,20 +1,15 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { onChangeEmail, onChangePassword, handleLogin } from '../../store'
-import styles from './login.module.css'
+import React from "react";
+import { connect } from "react-redux";
+import { onChangeEmail, onChangePassword, handleLogin } from "../../store";
+import styles from "./login.module.css";
 
-const Login = (props) => {
-
-const handleLogin = async () => {
-  const response = await props.handleLogin(props.email, props.password)
-  console.log(response)
-  if(response.type === 'LOGIN_SUCCESS') {
-    props.history.push('/home')
-  }
-
-
-  
-}
+const Login = props => {
+  const handleLogin = async () => {
+    const response = await props.handleLogin(props.username, props.password);
+    if (response.type === "LOGIN_SUCCESS") {
+      props.history.push("/home");
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -22,8 +17,8 @@ const handleLogin = async () => {
         <h1 className={styles.loginText}>Iniciar sesión</h1>
         <input
           type="text"
-          name="email"
-          placeholder="Email"
+          name="username"
+          placeholder="Usuario"
           className={styles.input}
           onChange={props.onChangeEmail}
           defaultValue={props.email}
@@ -38,33 +33,33 @@ const handleLogin = async () => {
         />
         <button onClick={handleLogin} className={styles.button}>
           Login
-          </button>
+        </button>
         {props.message && (
           <p
             className={styles.message}
-            style={{ color: props.logged ? '#17fd00' : '#ad2c2c' }}
+            style={{ color: props.logged ? "#17fd00" : "#ad2c2c" }}
           >
             {props.message}
           </p>
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     email: state.email,
     password: state.password,
     logged: state.logged,
-    message: state.message,
-  }
-}
+    message: state.message
+  };
+};
 
 const mapDispatchToProps = {
   onChangeEmail,
   onChangePassword,
-  handleLogin,
-}
+  handleLogin
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login)
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

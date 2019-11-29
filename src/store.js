@@ -1,111 +1,113 @@
-import { createStore, applyMiddleware } from 'redux'
-import { composeWithDevTools } from 'redux-devtools-extension';
-import thunk from 'redux-thunk';
+import { createStore, applyMiddleware } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
+import thunk from "redux-thunk";
 
 const initialState = {
   email: undefined,
   password: undefined,
   logged: false,
   message: undefined,
-  isLogging: false,
-}
+  isLogging: false
+};
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'ON_CHANGE_EMAIL':
+    case "ON_CHANGE_EMAIL":
       return {
         ...state,
         email: action.payload,
         logged: false,
         message: undefined
-      }
-    case 'ON_CHANGE_PASSWORD':
+      };
+    case "ON_CHANGE_PASSWORD":
       return {
         ...state,
         password: action.payload,
         logged: false,
         message: undefined
-      }
-    case 'LOGIN_PENDING':
+      };
+    case "LOGIN_PENDING":
       return {
         ...state,
-        isLogging: true,
-      }
-    case 'LOGIN_SUCCESS':
-      return {
-        ...state,
-        isLogging: false,
-        logged: action.payload.success,
-        message: action.payload.message,
-      }
-    case 'LOGIN_ERROR':
+        isLogging: true
+      };
+    case "LOGIN_SUCCESS":
       return {
         ...state,
         isLogging: false,
-        message: action.payload.message,
-      }
+        logged: true,
+        token: action.payload.token
+      };
+    case "LOGIN_ERROR":
+      return {
+        ...state,
+        isLogging: false,
+        message: action.payload.message
+      };
     default:
-      return state
+      return state;
   }
-}
+};
 
-export const onChangeEmail = (event) => {
-  const text = event.target.value
+export const onChangeEmail = event => {
+  const text = event.target.value;
   return {
-    type: 'ON_CHANGE_EMAIL',
+    type: "ON_CHANGE_EMAIL",
     payload: text
-  }
-}
+  };
+};
 
-export const onChangePassword = (event) => {
-  const text = event.target.value
+export const onChangePassword = event => {
+  const text = event.target.value;
   return {
-    type: 'ON_CHANGE_PASSWORD',
+    type: "ON_CHANGE_PASSWORD",
     payload: text
-  }
-}
+  };
+};
 
-export const handleLogin = (email, password) => {
-
-  return (dispatch) => {
+export const handleLogin = (username, password) => {
+  return dispatch => {
     dispatch({
-      type: 'LOGIN_PENDING',
-    })
+      type: "LOGIN_PENDING"
+    });
 
     const options = {
-      baseURL: 'http://localhost:4000/',
       timeout: 25000,
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-      },
-    }
+        "Content-Type": "application/json"
+      }
+    };
 
-    return fetch(`http://localhost:4000/login`, { ...options, body: JSON.stringify({ email, password }) })
+    return fetch(`https://mcga-servidor-19.herokuapp.com/api/auth/`, {
+      ...options,
+      body: JSON.stringify({ username, password })
+    })
       .then(res => res.json())
       .then(data => {
-        if (!data.success) {
-          return Promise.reject(data)
+        console.log(data);
+        if (!data.docs.length) {
+          return Promise.reject(data);
         }
         return dispatch({
-          type: 'LOGIN_SUCCESS',
-          payload: data,
-        })
+          type: "LOGIN_SUCCESS",
+          payload: data
+        });
       })
       .catch(error => {
         return dispatch({
-          type: 'LOGIN_ERROR',
-          payload: error,
-        })
-      })
-  }
+          type: "LOGIN_ERROR",
+          payload: error
+        });
+      });
+  };
+};
 
-}
+const middleware = [thunk];
 
-const middleware = [thunk]
+const store = createStore(
+  reducer,
+  composeWithDevTools(applyMiddleware(...middleware))
+);
 
-const store = createStore(reducer, composeWithDevTools(
-  applyMiddleware(...middleware),
-));
-
-export default store
+export default store;
