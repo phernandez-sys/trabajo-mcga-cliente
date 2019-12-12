@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { onChangeEmail, onChangePassword, handleLogin } from "../../store";
+import { onChangeEmail, onChangePassword, handleLogin } from "../../actions";
 import styles from "./login.module.css";
 
 const Login = props => {

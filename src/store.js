@@ -44,63 +44,67 @@ const reducer = (state = initialState, action) => {
         isLogging: false,
         message: action.payload.message
       };
+    case "GET_PRODUCTS_PENDING":
+      return {
+        ...state,
+        isLoading: true
+      };
+    case "GET_PRODUCTS_SUCCESS":
+      return {
+        ...state,
+        isLoading: false,
+        products: action.payload
+      };
+    case "GET_PRODUCTS_ERROR":
+      return {
+        ...state,
+        isLoading: false,
+        message: action.payload.message
+      };
+    case "DEL_PRODUCT_PENDING":
+      return {
+        ...state,
+        isLoading: true
+      };
+    case "DEL_PRODUCT_SUCCESS":
+      const productToDelete = state.products.findIndex(
+        ele => ele.code === action.payload.code
+      );
+      const newProducts = [...state.products];
+      newProducts.splice(productToDelete, 1);
+      return {
+        ...state,
+        isLoading: false,
+        products: newProducts
+      };
+    case "DEL_PRODUCT_ERROR":
+      return {
+        ...state,
+        isLoading: false,
+        message: action.payload.message
+      };
+    case "POST_PRODUCT_PENDING":
+      return {
+        ...state,
+        isLoading: true
+      };
+    case "POST_PRODUCT_SUCCESS":
+      const products = [...state.products];
+      products.push(action.payload.product);
+      return {
+        ...state,
+        isLoading: false,
+        products: products
+      };
+    case "POST_PRODUCT_ERROR":
+      return {
+        ...state,
+        isLoading: false,
+        message: action.payload.message
+      };
     default:
       return state;
   }
-};
-
-export const onChangeEmail = event => {
-  const text = event.target.value;
-  return {
-    type: "ON_CHANGE_EMAIL",
-    payload: text
-  };
-};
-
-export const onChangePassword = event => {
-  const text = event.target.value;
-  return {
-    type: "ON_CHANGE_PASSWORD",
-    payload: text
-  };
-};
-
-export const handleLogin = (username, password) => {
-  return dispatch => {
-    dispatch({
-      type: "LOGIN_PENDING"
-    });
-
-    const options = {
-      timeout: 25000,
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    };
-
-    return fetch(`https://mcga-servidor-19.herokuapp.com/api/auth/`, {
-      ...options,
-      body: JSON.stringify({ username, password })
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log(data);
-        if (!data.docs.length) {
-          return Promise.reject(data);
-        }
-        return dispatch({
-          type: "LOGIN_SUCCESS",
-          payload: data
-        });
-      })
-      .catch(error => {
-        return dispatch({
-          type: "LOGIN_ERROR",
-          payload: error
-        });
-      });
-  };
 };
 
 const middleware = [thunk];

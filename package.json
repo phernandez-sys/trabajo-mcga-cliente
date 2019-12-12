@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "formik": "^2.0.7",
     "install": "^0.13.0",
     "npm": "^6.12.1",
     "react": "^16.10.2",
